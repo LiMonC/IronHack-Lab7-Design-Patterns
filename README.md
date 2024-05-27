@@ -121,6 +121,77 @@ disneyFactory.createView(component: .label)
 DisneyLabel created
 ```
 
-  * **State Change Notification Across System Components**: 
+  * **State Change Notification Across System Components**: Observer Pattern is a behavioral design pattern that allows some objects to notify other objects about changes in their state.
 
-  * **Efficient Management of Asynchronous Operations**: 
+```Swift
+    protocol RideRequestObserver {
+    func newRideRequest(rideRequest: RideRequest)
+}
+
+class RideRequest: Observable {
+    var observers: [RideRequestObserver] = []
+
+    func addObserver(_ observer: RideRequestObserver) {
+        observers.append(observer)
+    }
+
+    func removeObserver(_ observer: RideRequestObserver) {
+        if let index = observers.firstIndex(of: observer) {
+            observers.remove(at: index)
+        }
+    }
+
+    func notifyObservers() {
+        for observer in observers {
+            observer.newRideRequest(rideRequest: self)
+        }
+    }
+}
+
+class Driver: RideRequestObserver {
+    func newRideRequest(rideRequest: RideRequest) {
+        // Accept or decline the ride request.
+    }
+}
+
+// Usage
+
+let rideRequest = RideRequest()
+
+// Register all of the available drivers as observers of the ride request.
+for driver in availableDrivers {
+    rideRequest.addObserver(driver)
+}
+
+// Notify the observers of the new ride request.
+rideRequest.notifyObservers()
+
+// The drivers will now be notified of the new ride request. They can then accept or decline the request.
+
+```
+  * **Efficient Management of Asynchronous Operations**:
+    In mobile front end programming Async functions can be suspended and resumed later, allowing our app to keep its UI responsive while working on long tasks, like making REST API calls.
+
+
+```Swift
+    class API {
+  ...
+  func fetchServerStatus() async throws -> ServerStatus {
+    let (data, _) = try await URLSession.shared.data(
+      from: URL(string: "http://amazingserver.com/status")!
+    )
+    return ServerStatus(data: data)
+  }
+}
+
+class ViewController {
+  let api = API()
+  let viewModel = ViewModel()
+
+  func viewDidAppear() {
+    Task {
+      viewModel.serverStatus = try await api.fetchServerStatus()
+    }
+  }
+}
+```
