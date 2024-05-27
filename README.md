@@ -65,8 +65,62 @@ Access Granted
 
    Adding a private initializer is important, because it stops other parts of our code from trying to create a FileManager class instance. However,   the class creates its own instance of itself as a static variable, which means the only instance of the FileManager class is the one it created: FileManager.shared.
 
-  * **Dynamic Object Creation Based on User Input**: Implement a system to dynamically create various types of user interface elements based on user actions.
+  * **Dynamic Object Creation Based on User Input**:
+The ‘Factory Method’ pattern defines an interface for creating an object and delegates the object creation to subclasses.
 
-  * **State Change Notification Across System Components**: Ensure components are notified about changes in the state of other parts without creating tight coupling.
+```swift
+protocol UIView {}
+class UITextField: UIView {}
+class UISwitch: UIView {}
+class UIButton: UIView {}
+class UILabel: UIView {}
+class UIImageView: UIView {}
+class DisneyTextField: UITextField {}
+class DisneySwitch: UISwitch {}
+class DisneyButton: UIButton {}
+class DisneyLabel: UILabel {}
+class DisneyImageView: UIImageView {}
+enum ComponentType {
+    case textfield
+    case `switch`
+    case button
+    case label
+    case image
+}
+protocol ComponentFactory {
+    func createView(component: ComponentType) -> UIView
+}
+class DisneyComponentFactory: ComponentFactory {
+    func createView(component: ComponentType) -> UIView {
+        switch component {
+        case .textfield:
+            print("DisneyTextField created")
+            return DisneyTextField()
+        case .switch:
+            print("DisneySwitch created")
+            return DisneySwitch()
+        case .button:
+            print("DisneyButton created")
+            return DisneyButton()
+        case .label:
+            print("DisneyLabel created")
+            return DisneyLabel()
+        case .image:
+            print("DisneyImageView created")
+            return DisneyImageView()
+        }
+    }
+}
+// Client
+let disneyFactory = DisneyComponentFactory()
+disneyFactory.createView(component: .label)
+```
 
-  * **Efficient Management of Asynchronous Operations**: Manage multiple asynchronous operations like API calls which need to be coordinated without blocking the main application workflow.
+### output
+```
+DisneyLabel created
+```
+
+  * **State Change Notification Across System Components**: 
+
+  * **Efficient Management of Asynchronous Operations**: 
